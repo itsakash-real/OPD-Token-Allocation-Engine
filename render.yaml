@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: opd-token-system
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python manage.py migrate && gunicorn config.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: DATABASE_URL
+        fromDatabase:
+          name: opd-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: opd-redis
+          type: redis
+          property: connectionString
+
+databases:
+  - name: opd-db
+    databaseName: opd_tokens
+    user: opd_user
+    plan: free
+
+  - name: opd-redis
+    plan: free
