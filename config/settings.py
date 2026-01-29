@@ -5,13 +5,24 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Security
+# ---------------- SECURITY ----------------
+
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-key-change-in-production')
 DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='.railway.app').split(',')
 
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='.railway.app'
+).split(',')
 
-# Applications
+# CSRF Trusted Origins (Fixes 403 Error)
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='https://*.railway.app'
+).split(',')
+
+# ---------------- APPLICATIONS ----------------
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -19,13 +30,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
     'corsheaders',
     'drf_spectacular',
     'tokens',
 ]
 
-# Middleware
+# ---------------- MIDDLEWARE ----------------
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -38,6 +51,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'config.urls'
+
+# ---------------- TEMPLATES ----------------
 
 TEMPLATES = [
     {
@@ -57,7 +72,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# ---------- DATABASE CONFIGURATION ----------
+# ---------------- DATABASE ----------------
+
 DATABASES = {
     'default': dj_database_url.parse(
         config(
@@ -68,7 +84,8 @@ DATABASES = {
     )
 }
 
-# ---------- REDIS / CACHE CONFIGURATION ----------
+# ---------------- REDIS / CACHE ----------------
+
 REDIS_URL = config('REDIS_URL', default='redis://localhost:6379/0')
 
 CACHES = {
@@ -81,7 +98,8 @@ CACHES = {
     }
 }
 
-# ---------- PASSWORD VALIDATION ----------
+# ---------------- PASSWORD VALIDATION ----------------
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -89,17 +107,20 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# ---------- INTERNATIONALIZATION ----------
+# ---------------- INTERNATIONALIZATION ----------------
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# ---------- STATIC FILES ----------
+# ---------------- STATIC FILES ----------------
+
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ---------- DRF & API DOCS ----------
+# ---------------- DRF & API DOCS ----------------
+
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100,
@@ -112,9 +133,11 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
 }
 
-# ---------- CORS ----------
+# ---------------- CORS ----------------
+
 CORS_ALLOW_ALL_ORIGINS = True
 
-# ---------- REDIS LOCK SETTINGS ----------
+# ---------------- REDIS LOCK SETTINGS ----------------
+
 REDIS_LOCK_TIMEOUT = 10
 REDIS_LOCK_BLOCKING_TIMEOUT = 5
